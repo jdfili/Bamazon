@@ -1,10 +1,11 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
+var cTable = require("console.table");
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "",
+    password: "Dw2cb25141414!@",
     database: "bamazon_db"
 })
 
@@ -46,22 +47,31 @@ function action(option) {
 };
 
 function listItems() {
+
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
+        var valArr = []
         for (var i = 0; i < res.length; i++) {
-            console.log("\nID: " + res[i].item_id + "\nItem: " + res[i].product_name + "\nPrice: " + res[i].price + "\nQuantity: " + res[i].stock_quantity + "\n------------")
+            var newArr = [];
+            newArr.push(res[i].item_id, res[i].product_name,res[i].price,res[i].stock_quantity);
+            valArr.push(newArr);
         };
+        console.table(['ID','Item','Price','Quantity'],valArr);
         connection.end();
     })
 };
 function lowItems() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
+        var valArr = []
         for (var i = 0; i < res.length; i++) {
             if (res[i].stock_quantity < 5) {
-                console.log("\nID: " + res[i].item_id + "\nItem: " + res[i].product_name + "\nPrice: " + res[i].price + "\nQuantity: " + res[i].stock_quantity + "\n------------")
-            }
+                var newArr = [];
+                newArr.push(res[i].item_id, res[i].product_name,res[i].price,res[i].stock_quantity);
+                valArr.push(newArr);
+            };
         };
+        console.table(['ID','Item','Price','Quantity'],valArr);
         connection.end();
     })
 };

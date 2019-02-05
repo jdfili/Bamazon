@@ -1,12 +1,12 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
-
+var cTable = require("console.table");
 
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "",
+    password: "Dw2cb25141414!@",
     database: "bamazon_db"
 })
 connection.connect(function (err) {
@@ -16,11 +16,16 @@ connection.connect(function (err) {
 
 function afterConnection() {
     connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+        var valArr = []
         for (var i = 0; i < res.length; i++) {
-            console.log("\nID: " + res[i].item_id + "\nItem: " + res[i].product_name + "\nPrice: " + res[i].price + "\n------------")
+            var newArr = [];
+            newArr.push(res[i].item_id, res[i].product_name,res[i].price)
+            valArr.push(newArr);
         };
+        console.table(['ID','Item','Price'],valArr);
+        marketPlace();
     })
-    marketPlace();
 };
 
 function marketPlace() {
@@ -47,9 +52,9 @@ function marketPlace() {
                     connection.end();
                 }
                 if (answers.quantity <= res[0].stock_quantity) {
-                    connection.query("UPDATE products SET stock_quantity =? WHERE item_id =?", [inventory, answers.id], function(err, res) {
+                    connection.query("UPDATE products SET stock_quantity =?, product_sales =? WHERE item_id =?", [inventory, cost, answers.id], function(err, res) {
                         if (err) throw err;
-                        console.log ("Your total cost is " + cost + " gold")
+                        console.log ("Your total cost is " + cost + " caps")
                         connection.end();
                     })
                 }
