@@ -1,7 +1,8 @@
+//Requiring npm packages
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 var cTable = require("console.table");
-
+//Creates a connection to the MYSql server
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -13,7 +14,7 @@ connection.connect(function (err) {
     if (err) throw err;
     afterConnection()
 })
-
+//Function that makes a SQL query that selects all data from the 'products' table, and then displays it to the user
 function afterConnection() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
@@ -27,7 +28,7 @@ function afterConnection() {
         marketPlace();
     })
 };
-
+// Function to recieve user input using the 'Inquirier' npm 
 function marketPlace() {
     inquirer
         .prompt([
@@ -43,12 +44,16 @@ function marketPlace() {
             }
         ])
         .then(answers => {
+            //After the answers are logged, a new Sql query is ran to select the specific data that is equal
+            //to the ID provided by the user. If the item is in stock, the user is provided with a cost amount
+            //and the table is updated to reflect the purchase made. If the amount the user wants to purchase is 
+            //greater than what is in stock, they are told the item is out of stock, and no change is made to the database.
             connection.query("SELECT * FROM products WHERE item_id=?", [answers.id], function(err, res) {
                 var cost = answers.quantity * res[0].price;
                 var inventory = res[0].stock_quantity - answers.quantity;
                 if (err) throw err;
                 if (answers.quantity > res[0].stock_quantity) {
-                    console.log("I'm sorry, my lowly shop doesn't have enough of what you desire :(");
+                    console.log("I'm sorry, I seem to be out of stock on that item, please purchase something else :(");
                     connection.end();
                 }
                 if (answers.quantity <= res[0].stock_quantity) {

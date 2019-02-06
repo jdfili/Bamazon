@@ -1,7 +1,10 @@
+-- Drops database if it already exists
 DROP DATABASE IF EXISTS bamazon_db;
+-- Creates new database
 CREATE DATABASE bamazon_db;
+-- Selects bamazon_db as the database that is goin to be used
 USE bamazon_db;
-
+-- Creates a table, and assigns the column names
 CREATE TABLE products (
     item_id INT NOT NULL AUTO_INCREMENT,
     product_name VARCHAR(100) NOT NULL,
@@ -11,7 +14,7 @@ CREATE TABLE products (
     product_sales INT(10),
     PRIMARY KEY (item_id)
 );
-
+-- Inserts values into the table
 INSERT INTO products (product_name, department_name, price, stock_quantity,product_sales)
 VALUES ('Brahmin Steak', 'Food', 10, 100,0), ('Stimpak', 'Medicine', 50, 30,0),
     ('Plasma Rifle', 'Weapons', 150, 5,0), ('Power Armor Helmet', 'Armor', 500, 2,0), ('Combat Boots', 'Armor', 75, 10,0),

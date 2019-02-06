@@ -1,6 +1,8 @@
+//Requiring npm packages
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 var cTable = require("console.table");
+//Creates connection to the MYSql server
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -9,7 +11,7 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 })
 
-
+//Function that prompts the user to select which action they would like to take
 function menu() {
     inquirer
         .prompt([
@@ -21,6 +23,8 @@ function menu() {
             }
         ])
         .then(answers => {
+            //Once the answer is logged, the users choice is then passed through a new function, 
+            //and a connection is made to the SQL server
             var option = answers.option;
             connection.connect(function (err) {
                 if (err) throw err;
@@ -28,7 +32,7 @@ function menu() {
             })
         })
 };
-
+//Switch statement that takes in user-input and then runs the appropriate function
 function action(option) {
     switch (option) {
         case "View Products for Sale":
@@ -45,7 +49,7 @@ function action(option) {
 
     }
 };
-
+// Function that lists all the items currently in the database
 function listItems() {
 
     connection.query("SELECT * FROM products", function (err, res) {
@@ -60,6 +64,7 @@ function listItems() {
         connection.end();
     })
 };
+// Function that only displays items that have a stock-quantity of less than 5. 
 function lowItems() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
@@ -75,6 +80,7 @@ function lowItems() {
         connection.end();
     })
 };
+//Function that resupplies inventory into the database
 function addItems() {
     inquirer
         .prompt([
@@ -96,12 +102,13 @@ function addItems() {
                 var inventory = parseFloat(answers.quantity) + res[0].stock_quantity;
                 connection.query("UPDATE products SET stock_quantity =? WHERE item_id =?", [inventory, id], function (err, res) {
                     if (err) throw err;
+                    console.log("Your transaction was accepted! " + answers.quantity + " items have been added to the inventory")
                     connection.end();
                 })
             })
         });
 };
-
+//Function that creates a new product based on the user-input provided. The new product is then inserted into the database.
 function createProduct() {
     inquirer
         .prompt([
@@ -114,7 +121,7 @@ function createProduct() {
                 type: "list",
                 name: "department_name",
                 message: "What department does this go in?",
-                choices: ["Food", "Medicine", "Armor", "Weapons", "Other"]
+                choices: ["Food", "Medicine", "Armor", "Weapons", "Misc"]
             },
             {
                 type: "input",
@@ -130,6 +137,7 @@ function createProduct() {
         .then(answers => {
             connection.query("INSERT INTO products SET ?", answers, function (err, res) {
                 if (err) throw err;
+                console.log("Your transaction was accepted! " + answers.product_name + " has been added to the " + answers.department_name + " department");
                 connection.end();
             });
         })
