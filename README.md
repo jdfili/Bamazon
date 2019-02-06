@@ -20,6 +20,6 @@
   - console.table [npm](https://www.npmjs.com/package/console.table)
 # Built by:
  - John Filiaga @[jdfili](https://github.com/jdfili)
-# Video Example 
-    (https://drive.google.com/file/d/1_eaaO2HqctgN5jfB6WrhISjpVUWtYlcb/view)
+# Video Example:
+ - https://drive.google.com/file/d/1_eaaO2HqctgN5jfB6WrhISjpVUWtYlcb/view
      
